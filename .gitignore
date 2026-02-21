@@ -1,6 +1,13 @@
-.ruff_cache/
 .venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
 __pycache__/
+*.py[cod]
+
 build/
 dist/
 *.spec
+
+.coverage
+*.log

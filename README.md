@@ -26,9 +26,9 @@ uv run python -m review_trash
 
 ## Build EXE
 
-```powershell
+```bash
 uv sync
-.\scripts\build.ps1 -Mode onedir
+./scripts/build.sh
 ```
 
 Release notes: `release/README.md`
