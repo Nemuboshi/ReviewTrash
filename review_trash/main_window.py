@@ -8,8 +8,6 @@ from html import escape
 from pathlib import Path
 import sys
 
-from PIL import Image
-from PIL.ImageQt import ImageQt
 from PySide6.QtCore import QObject, QRunnable, Qt, QThreadPool, QTimer, Signal
 from PySide6.QtGui import QCloseEvent, QFont, QFontDatabase, QImage, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
@@ -62,9 +60,9 @@ class ImageLoadTask(QRunnable):
     def run(self) -> None:
         """Decode the image off the UI thread and return the result via signal."""
         try:
-            with Image.open(self.path) as image:
-                image.load()
-                qimage: QImage = ImageQt(image.convert("RGBA")).copy()
+            qimage = QImage(str(self.path))
+            if qimage.isNull():
+                raise RuntimeError(f"Failed to decode image: {self.path}")
             self.signals.loaded.emit(self.request_id, str(self.path), qimage, "", self.for_display)
         except Exception as exc:
             self.signals.loaded.emit(self.request_id, str(self.path), QImage(), str(exc), self.for_display)
@@ -387,7 +385,8 @@ class MainWindow(QMainWindow):
         # Search in this order:
         # 1) PyInstaller bundle data path
         # 2) Executable directory data path
-        # 3) Project root (source run)
+        # 3) Package asset path (source run)
+        # 4) Project root (legacy fallback)
         ttf_candidates: list[Path] = []
         bundle_dir = getattr(sys, "_MEIPASS", None)
         if bundle_dir:
@@ -398,6 +397,10 @@ class MainWindow(QMainWindow):
         exe_fonts = Path(sys.executable).resolve().parent / "review_trash" / "assets" / "fonts"
         if exe_fonts.exists():
             ttf_candidates.extend(sorted(exe_fonts.glob("*.ttf")))
+
+        source_assets = Path(__file__).resolve().parent / "assets" / "fonts"
+        if source_assets.exists():
+            ttf_candidates.extend(sorted(source_assets.glob("*.ttf")))
 
         project_root = Path(__file__).resolve().parent.parent
         ttf_candidates.extend(sorted(project_root.glob("*.ttf")))
