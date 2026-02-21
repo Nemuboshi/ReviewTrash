@@ -1,6 +1,6 @@
-﻿# Subtitle Proof GUI
+﻿# ReviewTrash
 
-A desktop subtitle review tool for `ASS + PNG` workflows, built with PySide6.
+A subtitle review tool for `ASS + PNG` workflows, built with PySide6.
 
 ## Features
 
@@ -16,22 +16,6 @@ A desktop subtitle review tool for `ASS + PNG` workflows, built with PySide6.
 - Issues panel for parse errors and missing images, with click-to-jump.
 - Chunked list rendering, asynchronous image loading, and cache prefetching.
 - Top status summary for progress, missing images, and unsaved changes.
-
-## Run
-
-```bash
-uv sync
-uv run python -m review_trash
-```
-
-## Build EXE
-
-```bash
-uv sync
-./scripts/build.sh
-```
-
-Release notes: `release/README.md`
 
 ## Shortcuts
 
